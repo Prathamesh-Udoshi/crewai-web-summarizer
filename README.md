@@ -104,6 +104,19 @@ crewai run
 ```
 You will be prompted to enter a **topic** (e.g. `Quantum Computing progress in 2026`). The crew will start, execute the search, summarize the findings, and print the output.
 
+### Running with Gradio Web UI 🌐
+
+You can also run the crew using a beautiful browser-based UI. To launch the web interface:
+
+```bash
+uv run python app.py
+```
+
+Then, open `http://127.0.0.1:7860` in your web browser. You can:
+1. Enter your research topic.
+2. Click **Launch Agents**.
+3. View the final **Summary** (rendered in Markdown), the list of **Extracted Sources** (as clickable links), and the detailed **Research Logs** in a clean, interactive dashboard.
+
 ---
 
 ## Project Structure
