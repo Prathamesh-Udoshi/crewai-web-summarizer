@@ -1,6 +1,6 @@
 # Web Summarizer Agent Crew 🌐📝
 
-An AI agent crew powered by [CrewAI](https://crewai.com) utilizing a JSON-first configuration. This project automates the workflow of searching the web for any specific topic, scraping the relevant content, and producing a structured markdown summary.
+An AI agent crew powered by [CrewAI](https://crewai.com) utilizing a JSON-first configuration and featuring an interactive **Gradio Web UI**. This project automates the workflow of searching the web for any specific topic, scraping the relevant content, extracting source URLs, and producing a structured Markdown summary.
 
 ---
 
@@ -10,13 +10,17 @@ The crew uses a **sequential process** where tasks are executed in order. Here i
 
 ```mermaid
 graph TD
-    User([User Input: Topic]) --> Task1[Search & Extract Web Content]
+    User([User Input: Topic via Gradio UI]) --> Launch[app.py Launcher]
+    Launch --> Task1[Search & Extract Web Content]
     Task1 --> Agent1[Web Research Specialist]
     Agent1 -->|SerperDevTool| Web[Google Search]
     Agent1 -->|SmartWebScraper| Scraping[Custom Smart Web Scraper]
     Agent1 -->|Outputs Research Report| Task2[Analyze & Summarize]
     Task2 --> Agent2[Content Summarizer]
     Agent2 -->|Generates markdown| Output([Final Markdown Summary])
+    Output --> UI_Summary[📝 Summary Tab]
+    Task1 -->|URLs Extracted| UI_Sources[🔗 Extracted Sources Tab]
+    Task1 -->|Raw Specialist Outputs| UI_Logs[📋 Research Logs Tab]
 ```
 
 ---
