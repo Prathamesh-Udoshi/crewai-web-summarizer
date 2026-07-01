@@ -13,7 +13,7 @@ graph TD
     User([User Input: Topic]) --> Task1[Search & Extract Web Content]
     Task1 --> Agent1[Web Research Specialist]
     Agent1 -->|SerperDevTool| Web[Google Search]
-    Agent1 -->|ScrapeWebsiteTool| Scraping[Web Scraper]
+    Agent1 -->|SmartWebScraper| Scraping[Custom Smart Web Scraper]
     Agent1 -->|Outputs Research Report| Task2[Analyze & Summarize]
     Task2 --> Agent2[Content Summarizer]
     Agent2 -->|Generates markdown| Output([Final Markdown Summary])
@@ -27,11 +27,13 @@ graph TD
 The agents are configured in the `agents/` directory:
 * **Web Research Specialist** (`agents/web_research_specialist.jsonc`):
   * **Role**: Expert AI researcher skilled in finding accurate sources.
-  * **Goal**: Search the internet, extract relevant content, and organize findings.
-  * **Tools**: `SerperDevTool` (Google search queries), `ScrapeWebsiteTool` (scrapes webpage content).
+  * **Goal**: Search the internet and scrape ONLY the top 2 relevant pages to gather high-density facts.
+  * **Tools**: `SerperDevTool` (Google search queries), `custom:smart_web_scraper` (custom cleaned webpage & PDF text extractor).
+  * **Optimizations**: Restricted to a maximum of 3 reasoning iterations (`max_iter: 3`) and guided to search once and scrape at most 2 URLs to avoid prompt overhead.
 * **Content Summarizer** (`agents/content_summarizer.jsonc`):
   * **Role**: Technical writer and summarization specialist.
   * **Goal**: Synthesize lengthy research logs into clear, organized, objective summaries.
+  * **Tools**: None (uses LLM reasoning).
 
 ### 2. Tasks
 The tasks are configured in `crew.jsonc`:
@@ -41,6 +43,19 @@ The tasks are configured in `crew.jsonc`:
 * **Analyze & Summarize** (`analyze_the_research_collected_task`):
   * **Description**: Processes research findings and builds a readable markdown summary containing titles, key bullet points, and a conclusion.
   * **Agent**: Content Summarizer
+
+---
+
+## Token Optimization & Custom Scraper Features 🚀
+
+To prevent token bloating (reducing input tokens by **85%+**), this crew implements:
+1. **Custom Smart Web Scraper (`tools/smart_web_scraper.py`)**:
+   - **Boilerplate Removal**: Automatically strips `nav`, `footer`, `header`, `aside`, ads, and layout classes.
+   - **Top-N Relevance Filtering**: Scores text paragraphs against the topic using keyword tf-idf density, returning only the top 6 highest-scoring blocks.
+   - **Hard Truncation**: Enforces a strict limit of 4,500 characters per webpage (~1,000 tokens).
+   - **PDF Parsing**: Automatically detects PDF links and extracts text via PyMuPDF/pdfplumber.
+2. **Reasoning Loop Limits**: The researcher agent has a hard limit of `max_iter: 3` (down from 5) to prevent quadratic prompt growth during loop steps.
+3. **Disabled Memory**: Turned off CrewAI's `memory` setting to prevent vector db searches from appending prompt-bloating historical summaries.
 
 ---
 

@@ -103,7 +103,7 @@
   "verbose": true,
 
   // Enable crew memory — persists context and learnings across tasks
-  "memory": true,
+  "memory": false,
 
   // Automatically plan the execution strategy before running tasks
   // "planning": false,
@@ -126,7 +126,7 @@
   // "after_kickoff_callbacks": [{"python": "my_project.callbacks.after_kickoff"}],
   // "function_calling_llm": "openai/gpt-4o-mini",
   // "max_rpm": null,
-  // "cache": true,
+  "cache": false,
   // "knowledge_sources": [],
   // "embedder": {},
   // "output_log_file": "crew.log",
